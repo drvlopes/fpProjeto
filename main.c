@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
+#include <string.h>
 
 #define MAXIMO_NUMERO_ESCOLAS 5
 #define MAXIMO_NUMERO_UTILIZADORES 200
@@ -56,7 +57,7 @@ void menu_transacoes(int num_transacoes);
 void menu_estatisticas();
 int registo_utilizador(t_utilizador v_utilizadores[], int num_utilizadores);
 int procurar_utilizador(t_utilizador v_utilizadores[],int num_utilizadores ,int nif_utilizador);
-void consultar_utilizador();
+void consultar_utilizador(t_utilizador v_utilizadores[], int num_utilizadores);
 void registar_trasacoes();
 void consultar_trasacoes();
 void ler_escola();
@@ -87,7 +88,14 @@ int main()
         switch(opcao)
         {
             case 1:
-                if(numero_utilizadores >= MAXIMO_NUMERO_UTILIZADORES) {
+
+                break;
+            case 2:
+
+                break;
+            case 3:
+                if(numero_utilizadores >= MAXIMO_NUMERO_UTILIZADORES)
+                {
                     printf("\nNão é possivel adicionar mais utilizadores!\n\nClique enter para continuar.");
                     fflush(stdin);
                     getchar();
@@ -95,13 +103,14 @@ int main()
                     numero_utilizadores = registo_utilizador(utilizadores, numero_utilizadores);
                 }
                 break;
-            case 2:
-                menu_utilizador(numero_utilizadores);
-                break;
-            case 3:
-                menu_transacoes(numero_trasacoes);
-                break;
             case 4:
+                if(numero_utilizadores > 0){
+                    //consultar_utilizador(utilizadores, numero_utilizadores);
+                } else{
+                    printf("\nNão foram introduzidos alunos!\n");
+                    fflush(stdin);
+                    getchar();
+                }
                 break;
             case 0:
                 saida = confirmar_saida();
@@ -121,7 +130,7 @@ int menu()
         system("cls");
         printf("Menu de Opcoes\n");
         printf("\n1 - Registar nova escola");
-        printf("\n1 - Consultar dados das escolas");
+        printf("\n2 - Consultar dados das escolas");
         printf("\n3 - Registar novo utilizador");
         printf("\n4 - Consultar dados dos utilizadores");
         printf("\n5 - Registar/consultar os dados das transacoes");
@@ -162,35 +171,43 @@ char confirmar_saida()
 
 int registo_utilizador(t_utilizador v_utilizadores[], int num_utilizadores)
 {
-    int utilizador_existe, nif_utilizador;
+    int utilizador_existe = -1, nif_utilizador;
 
     do{
-        utilizador_existe = 0;
-
         printf("\nIntroduzir nif do utilizador: ");
         scanf("%d",&nif_utilizador);
         utilizador_existe = procurar_utilizador(v_utilizadores, num_utilizadores, nif_utilizador);
 
-        if(utilizador_existe != 0){
-            v_utilizadores[utilizador_existe].nif = nif_utilizador;
+        if(utilizador_existe == -1)
+        {
+            v_utilizadores[num_utilizadores].nif = nif_utilizador;
         }
         else{
-            printf("\nO utilizador com o nif %d já existe!\n", nif_utilizador);
+            printf("\nO utilizador com o nif %d já existe!\n\nClique enter para continuar.", nif_utilizador);
             fflush(stdin);
             getchar();
         }
-    } while(utilizador_existe != 0);
+    } while(utilizador_existe != -1);
+
+    v_utilizadores[num_utilizadores].id = num_utilizadores + 1;
+    v_utilizadores[num_utilizadores].id_escola = 1;
+    strcpy(v_utilizadores[num_utilizadores].tipo_utilizador, "estudante");
+    v_utilizadores[num_utilizadores].saldo = 0;
 
     printf("Nome: ");
     fflush(stdin);
-    scanf("%80[^\n]s", v_utilizadores[utilizador_existe].nome);
+    scanf("%80[^\n]s", v_utilizadores[num_utilizadores].nome);
+
+    printf("Email: ");
+    fflush(stdin);
+    scanf("%80[^\n]s", v_utilizadores[num_utilizadores].email);
 
     return num_utilizadores + 1;
 }
 
 int procurar_utilizador(t_utilizador v_utilizadores[],int num_utilizadores ,int nif_utilizador)
 {
-    int encontrou_utilizador = 0, indice;
+    int encontrou_utilizador = -1, indice;
 
     for (indice = 0; indice < num_utilizadores; indice++) {
         if(v_utilizadores[indice].nif == nif_utilizador){
