@@ -52,12 +52,11 @@ typedef struct                  // Cria uma STRUCT para armazenar os dados das t
 } t_transacao;
 
 int menu();
-void menu_utilizador(int num_utilizadores);
-void menu_transacoes(int num_transacoes);
 void menu_estatisticas();
-int registo_utilizador(t_utilizador v_utilizadores[], int num_utilizadores);
+int registo_utilizador(t_utilizador v_utilizadores[], int num_utilizadores, int nif_utilizador);
 int procurar_utilizador(t_utilizador v_utilizadores[],int num_utilizadores ,int nif_utilizador);
-void consultar_utilizador(t_utilizador v_utilizadores[], int num_utilizadores);
+void consultar_utilizadores(t_utilizador v_utilizadores[],t_escola v_escolas[], int num_utilizadores);
+void mostrar_utilizador(t_utilizador v_utilizadores[],t_escola v_escolas[], int num_utilizadores);
 void registar_trasacoes();
 void consultar_trasacoes();
 void ler_escola();
@@ -88,6 +87,29 @@ int main()
         switch(opcao)
         {
             case 1:
+                strcpy(escolas[0].abreviatura,"ESTG");
+                strcpy(escolas[0].campus,"Campus 2");
+                escolas[0].id = 1;
+                strcpy(escolas[0].localidade,"Leiria");
+                strcpy(escolas[0].nome_escola,"Escola Superior de Tecnologia e Gestao");
+
+                strcpy(escolas[1].abreviatura,"ESAD");
+                strcpy(escolas[1].campus,"Campus 3");
+                escolas[1].id = 2;
+                strcpy(escolas[1].localidade,"Caldas da Rainha");
+                strcpy(escolas[1].nome_escola,"Escola Superior de Artes e Design");
+
+                numero_escolas = 2;
+
+                utilizadores[0].id = 1;
+                utilizadores[0].id_escola = 1;
+                strcpy(utilizadores[0].nome, "Diogo Lopes");
+                utilizadores[0].nif = 255081103;
+                strcpy(utilizadores[0].tipo_utilizador, "Estudante");
+                strcpy(utilizadores[0].email, "tbpt30@hotmail.com");
+                utilizadores[0].saldo = 10.0;
+
+                numero_utilizadores = 1;
 
                 break;
             case 2:
@@ -100,14 +122,42 @@ int main()
                     fflush(stdin);
                     getchar();
                 } else{
-                    numero_utilizadores = registo_utilizador(utilizadores, numero_utilizadores);
+                    numero_utilizadores = registo_utilizador(utilizadores, numero_utilizadores, 0);
                 }
                 break;
             case 4:
-                if(numero_utilizadores > 0){
-                    //consultar_utilizador(utilizadores, numero_utilizadores);
-                } else{
-                    printf("\nNão foram introduzidos alunos!\n");
+                if(numero_utilizadores > 0)
+                {
+                    do
+                    {
+                        system("cls");
+                        printf("Consultar dados dos utilizadores\n");
+                        printf("\n1 - Consultar todos os utilizadores");
+                        printf("\n2 - Pesquisar utilizador por nif");
+                        printf("\n0 - Voltar para o menu principal");
+                        printf("\n\nOpcao: ");
+                        fflush(stdin);
+                        scanf(" %d",&opcao);
+                        if(opcao < 0 || opcao > 2)
+                        {
+                            printf("\nOpcao invalida!");
+                        }
+                    } while(opcao < 0 || opcao > 2);
+                    switch (opcao)
+                    {
+                        case 1:
+                            consultar_utilizadores(utilizadores, escolas, numero_utilizadores);
+                            break;
+                        case 2:
+                            mostrar_utilizador(utilizadores, escolas, numero_utilizadores);
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                else
+                {
+                    printf("\nNão foram introduzidos alunos!\n\nClique enter para continuar.");
                     fflush(stdin);
                     getchar();
                 }
@@ -126,7 +176,8 @@ int menu()
 {
     int opcao;
 
-    do {
+    do
+    {
         system("cls");
         printf("Menu de Opcoes\n");
         printf("\n1 - Registar nova escola");
@@ -142,7 +193,8 @@ int menu()
 
         scanf("%d",&opcao);
         fflush(stdin);
-        if(opcao < 0 || opcao > 6){
+        if(opcao < 0 || opcao > 6)
+        {
             printf("\nOpcao invalida!");
         }
     } while(opcao < 0 || opcao > 6);
@@ -156,11 +208,14 @@ char confirmar_saida()
 
     printf("\nConfirma saida (S/N): ");
 
-    do {
+    do
+    {
         scanf(" %c", &escolha);
         fflush(stdin);
         escolha = toupper(escolha);
-        if(escolha != 'S' && escolha != 'N'){
+
+        if(escolha != 'S' && escolha != 'N')
+        {
             printf("\nEscolha invalida!");
         }
 
@@ -169,29 +224,40 @@ char confirmar_saida()
     return escolha;
 }
 
-int registo_utilizador(t_utilizador v_utilizadores[], int num_utilizadores)
+int registo_utilizador(t_utilizador v_utilizadores[], int num_utilizadores, int nif_utilizador)
 {
-    int utilizador_existe = -1, nif_utilizador;
+    int utilizador_existe = -1;
 
-    do{
-        printf("\nIntroduzir nif do utilizador: ");
-        scanf("%d",&nif_utilizador);
-        utilizador_existe = procurar_utilizador(v_utilizadores, num_utilizadores, nif_utilizador);
-
-        if(utilizador_existe == -1)
+    if(nif_utilizador == 0)
+    {
+        do
         {
-            v_utilizadores[num_utilizadores].nif = nif_utilizador;
-        }
-        else{
-            printf("\nO utilizador com o nif %d já existe!\n\nClique enter para continuar.", nif_utilizador);
-            fflush(stdin);
-            getchar();
-        }
-    } while(utilizador_existe != -1);
+
+            printf("\nIntroduzir nif do utilizador: ");
+            scanf("%d",&nif_utilizador);
+            utilizador_existe = procurar_utilizador(v_utilizadores, num_utilizadores, nif_utilizador);
+
+            if(utilizador_existe == -1)
+            {
+                v_utilizadores[num_utilizadores].nif = nif_utilizador;
+            }
+            else
+            {
+                printf("\nO utilizador com o nif %d já existe!\n\nClique enter para continuar.", nif_utilizador);
+                fflush(stdin);
+                getchar();
+            }
+        } while(utilizador_existe != -1);
+
+    }
+    else
+    {
+        v_utilizadores[num_utilizadores].nif = nif_utilizador;
+    }
 
     v_utilizadores[num_utilizadores].id = num_utilizadores + 1;
     v_utilizadores[num_utilizadores].id_escola = 1;
-    strcpy(v_utilizadores[num_utilizadores].tipo_utilizador, "estudante");
+    strcpy(v_utilizadores[num_utilizadores].tipo_utilizador, "Estudante");
     v_utilizadores[num_utilizadores].saldo = 0;
 
     printf("Nome: ");
@@ -209,11 +275,59 @@ int procurar_utilizador(t_utilizador v_utilizadores[],int num_utilizadores ,int 
 {
     int encontrou_utilizador = -1, indice;
 
-    for (indice = 0; indice < num_utilizadores; indice++) {
-        if(v_utilizadores[indice].nif == nif_utilizador){
+    for (indice = 0; indice < num_utilizadores; indice++)
+    {
+        if(v_utilizadores[indice].nif == nif_utilizador)
+        {
             encontrou_utilizador = indice;
         }
     }
 
     return encontrou_utilizador;
+}
+
+void consultar_utilizadores(t_utilizador v_utilizadores[],t_escola v_escolas[], int num_utilizadores)
+{
+    int indice;
+
+    printf("\nDados dos utilizadores\n");
+    printf("Numero\tNome\t\t\t\tEscola\tNIF\t\t\tTipo\t\tE-mail\t\t\t\tSaldo\n");
+
+    for (indice = 0; indice < num_utilizadores; indice++)
+    {
+        printf("%d\t\t%s\t\t\t%s\t%d\t%s\t%s\t%.2f\n", v_utilizadores[indice].id, v_utilizadores[indice].nome,v_escolas[v_utilizadores[indice].id_escola - 1].abreviatura,v_utilizadores[indice].nif,v_utilizadores[indice].tipo_utilizador,v_utilizadores[indice].email,v_utilizadores[indice].saldo);
+    }
+    fflush(stdin);
+    getchar();
+}
+
+void mostrar_utilizador(t_utilizador v_utilizadores[],t_escola v_escolas[], int num_utilizadores){
+    int encontrou_utilizador, nif_utilizador;
+    char opcao;
+    do{
+        system("cls");
+        printf("Pesquisar utilizador por nif\n\nIntroduzir nif do utilizador: ");
+        scanf("%d",&nif_utilizador);
+        encontrou_utilizador = procurar_utilizador(v_utilizadores, num_utilizadores, nif_utilizador);
+        if(encontrou_utilizador == -1){
+            printf("\nO utilizador com o nif %d nao existe!\nDeseja criar um utilizador com esse nif? (S/N) ", nif_utilizador);
+            do {
+                fflush(stdin);
+                scanf(" %c", &opcao);
+                opcao = toupper(opcao);
+                if(opcao != 'S' && opcao != 'N') {
+                    printf("\nEscolha invalida!");
+                }
+                else if( opcao == 'S') {
+                    registo_utilizador(v_utilizadores, num_utilizadores, nif_utilizador);
+                    encontrou_utilizador = -2;
+                }
+            } while(opcao != 'S' && opcao != 'N');
+        }
+        else{
+            printf("\nDados do utilizador\nNumero\tNome\t\t\t\tEscola\tNIF\t\t\tTipo\t\tE-mail\t\t\t\tSaldo\n%d\t\t%s\t\t\t%s\t%d\t%s\t%s\t%.2f\n", v_utilizadores[encontrou_utilizador].id, v_utilizadores[encontrou_utilizador].nome,v_escolas[v_utilizadores[encontrou_utilizador].id_escola - 1].abreviatura,v_utilizadores[encontrou_utilizador].nif,v_utilizadores[encontrou_utilizador].tipo_utilizador,v_utilizadores[encontrou_utilizador].email,v_utilizadores[encontrou_utilizador].saldo);
+            fflush(stdin);
+            getchar();
+        }
+    }while (encontrou_utilizador == -1);
 }
