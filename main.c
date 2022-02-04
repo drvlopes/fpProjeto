@@ -247,13 +247,14 @@ int main()
             {
                 if (numero_utilizadores == 0)
                 {
-                    printf("Tem de intruduzir utilizadores\n");
+                    printf("Tem de introduzir utilizadores\n");
                 }
                 else
                 {
-                    printf("Tem de intruduzir transacoes\n");
+                    printf("Tem de introduzir transacoes\n");
                 }
             }
+            break;
         case 7:
             if (numero_escolas > 0)
             {
@@ -396,8 +397,8 @@ int menu_transacoes()
     {
         system("cls");
         printf("\nRegistar/consultar os dados das transacoes:\n");
-        printf("\n1 - Criar nova transancao");
-        printf("\n2 - Consultar todas as transancoes");
+        printf("\n1 - Criar nova transacao");
+        printf("\n2 - Consultar todas as transacoes");
         printf("\n0 - Voltar para o menu principal");
         printf("\n\nOpcao: ");
         scanf(" %d", &opcao);
@@ -864,7 +865,7 @@ void tipo_transacao(t_transacao v_transacoes[], int num_transacoes)
     int tipo_transacao;
     do
     {
-        printf("Escolha o tipo de transacao:\n1 - Pagamento\n2 - Carragamento\n");
+        printf("Escolha o tipo de transacao:\n1 - Pagamento\n2 - Carregamento\n");
         scanf(" %d", &tipo_transacao);
         if (tipo_transacao < 1 || tipo_transacao > 2)
         {
@@ -879,7 +880,7 @@ void tipo_transacao(t_transacao v_transacoes[], int num_transacoes)
     }
     else
     {
-        strcpy(v_transacoes[num_transacoes].tipo_transacao, "Carragamento");
+        strcpy(v_transacoes[num_transacoes].tipo_transacao, "Carregamento");
     }
 }
 
@@ -939,8 +940,8 @@ void consultar_transacoes(t_transacao v_transacoes[], int num_transacoes)
 {
     int indice;
     system("cls");
-    printf("\nDados das transancoes\n");
-    printf("Numero\tNumero do utitlizador\tTipo da transancao\tValor da transacao\tData da transacao\tHora da trasancao\n");
+    printf("\nDados das transacoes\n");
+    printf("Numero\tNumero do utilizador\tTipo da transacao\tValor da transacao\tData da transacao\tHora da transacao\n");
     for (indice = 0; indice < num_transacoes; indice++)
     {
         printf("%d\t%d\t\t\t%s\t\t\t%.2f\t\t%d/%d/%d\t\t%d:%d:%d\n", v_transacoes[indice].id, v_transacoes[indice].id_utilizador, v_transacoes[indice].tipo_transacao, v_transacoes[indice].valor_transacao, v_transacoes[indice].data_transacao.ano, v_transacoes[indice].data_transacao.mes, v_transacoes[indice].data_transacao.dia, v_transacoes[indice].hora_transacao.horas, v_transacoes[indice].hora_transacao.minutos, v_transacoes[indice].hora_transacao.segundos);
