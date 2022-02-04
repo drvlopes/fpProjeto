@@ -12,3 +12,4 @@ _deps
 *.txt
 cmake-build-debug/
 .idea/
+*.exe
